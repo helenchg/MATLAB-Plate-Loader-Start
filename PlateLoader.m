@@ -23,14 +23,17 @@ classdef PlateLoader < hgsetget
     methods
         function obj = PlateLoader(portNumber)
             % Construct a PlateLoader Object
+            
+            % Close any open serial connections
+            open_ports=instrfind('Type','serial','Status','open');
+            if ~isempty(open_ports)
+                 fclose(open_ports);
+            end
             portStr = sprintf('COM%d',portNumber);
-            obj.serialRobot = serial(portStr,'BaudRate',19200,'Terminator',10,'Timeout',0.5);
+            obj.serialRobot = serial(portStr,'BaudRate',19200,'Terminator',10,'Timeout',1);
             response = robotOpenSeq(obj);
             % Had to print the response since a construct cannot return mulitple items
             fprintf(response);  
-% Code used while testing:
-%                     function obj = PlateLoader(preConnectedSerial)
-%                         obj.serialRobot = preConnectedSerial;
             obj.xAxisPosition = 3;
             obj.isZAxisExtended = false;
             obj.isGripperClosed = true;
@@ -65,7 +68,6 @@ classdef PlateLoader < hgsetget
             % Extends the Z-Axis, passes the reply back to caller
             fprintf(obj.serialRobot,'Z-AXIS EXTEND');
             response = getResponse(obj);
-            
             if(strcmp(response(1:5),'ERROR'))
                 obj.isZAxisExtended = false;
             else
@@ -146,11 +148,11 @@ classdef PlateLoader < hgsetget
         function response = getStatus(obj)
             % Since we are keeping the status as instance fields we can just
             % get the properties of the class, this is a useful double check
+            fprintf(obj.serialRobot,'LOADER_STATUS');
+            response = getResponse(obj);
             % TODO: Make the values update if different
             %  Can someone make the call to LOADED_STATUS also update
             %  properties, just in case somehow it gets off
-            fprintf(obj.serialRobot,'LOADER_STATUS');
-            response = getResponse(obj);
         end
         
         % Other to todo's if someone wants to.  Implement the additional
@@ -197,7 +199,7 @@ function response = robotOpenSeq(obj)
 % Open the serial port for PlateLoader and RESET
 fprintf('Connect to robot...');
 fprintf('Status is %s\n',obj.serialRobot.Status);
-fprintf('Openning...');
+fprintf('Opening...');
 fopen(obj.serialRobot)
 fprintf('Status is %s\n',obj.serialRobot.Status);
 fprintf(obj.serialRobot,'INITIALIZE');
