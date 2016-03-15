@@ -22,7 +22,7 @@ function varargout = PlateLoaderGui(varargin)
 
 % Edit the above text to modify the response to help PlateLoaderGui
 
-% Last Modified by GUIDE v2.5 14-Mar-2016 13:25:55
+% Last Modified by GUIDE v2.5 15-Mar-2016 10:16:26
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,11 +54,21 @@ function PlateLoaderGui_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for PlateLoaderGui
 handles.output = hObject;
+handles.user.connected = 'false';
 handles.user.robot = 0;
+
+handles.user.timeTable = [60 20 30
+            0 30 30
+            30 0 30
+            30 30 0
+            30 20 60];
 % handles.user.robot = PlateLoaderSim;
-addImageToAxes('robot_background.jpg', handles.axes_background, 0);
-addImageToAxes('gripper_closed_no_plate.jpg', handles.axes_gripper, 100);
-addImageToAxes('extended_bars.jpg', handles.axes_bars, 0);
+handles.user.background = addImageToAxes('robot_background.jpg', handles.axes_background, 0);
+handles.user.gripperClosed = addImageToAxes('gripper_closed_no_plate.jpg', handles.axes_gripper, 100);
+handles.user.bars = addImageToAxes('extended_bars.jpg', handles.axes_bars, 0);
+set(handles.user.bars, 'Visible', 'Off'); 
+handles.user.moveAmountX = 95;
+handles.user.moveAmountY = 130;
 % set(handles.axes_background, 'Position', [0 0 0 0])
 % Update handles structure
 guidata(hObject, handles);
@@ -85,6 +95,9 @@ function pushbutton_reset_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.user.robot.reset;
 set(handles.text_response, 'String', handles.user.robot.reset);
+set(handles.axes_gripper, 'Position', [396 497 100 57]);
+set(handles.axes_bars, 'Position', [420 424 53 129]);
+set(handles.user.bars, 'Visible', 'Off');
 guidata(hObject, handles);
 
 % --- Executes on button press in pushbutton_x1.
@@ -94,6 +107,10 @@ function pushbutton_x1_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.user.robot.x(1);
 set(handles.text_response, 'String', handles.user.robot.x(1));
+set(handles.axes_gripper, 'Position', [396-2*handles.user.moveAmountX 497 100 57]);
+set(handles.axes_bars, 'Position', [420-2*handles.user.moveAmountX 424 53 129]);
+set(handles.user.bars, 'Visible', 'Off');
+
 guidata(hObject, handles);
 
 
@@ -104,6 +121,10 @@ function pushbutton_x2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.user.robot.x(2);
 set(handles.text_response, 'String', handles.user.robot.x(2));
+set(handles.axes_gripper, 'Position', [396-handles.user.moveAmountX 497 100 57]);
+set(handles.axes_bars, 'Position', [420-handles.user.moveAmountX 424 53 129]);
+set(handles.user.bars, 'Visible', 'Off');
+
 guidata(hObject, handles);
 
 
@@ -114,6 +135,10 @@ function pushbutton_x3_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.user.robot.x(3);
 set(handles.text_response, 'String', handles.user.robot.x(3));
+set(handles.axes_gripper, 'Position', [396 497 100 57]);
+set(handles.axes_bars, 'Position', [420 424 53 129]);
+set(handles.user.bars, 'Visible', 'Off');
+
 guidata(hObject, handles);
 
 
@@ -124,6 +149,10 @@ function pushbutton_x4_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.user.robot.x(4);
 set(handles.text_response, 'String', handles.user.robot.x(4));
+set(handles.axes_gripper, 'Position', [396+handles.user.moveAmountX 497 100 57]);
+set(handles.axes_bars, 'Position', [420+handles.user.moveAmountX 424 53 129]);
+set(handles.user.bars, 'Visible', 'Off');
+
 guidata(hObject, handles);
 
 
@@ -134,6 +163,11 @@ function pushbutton_x5_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.user.robot.x(5);
 set(handles.text_response, 'String', handles.user.robot.x(5));
+set(handles.axes_gripper, 'Position', [396+2*handles.user.moveAmountX 497 100 57]);
+set(handles.axes_bars, 'Position', [420+2*handles.user.moveAmountX 424 53 129]);
+set(handles.user.bars, 'Visible', 'Off');
+
+
 guidata(hObject, handles);
 
 
@@ -162,8 +196,13 @@ function pushbutton_retract_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_retract (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+% if handles.user.robot ~= 0
+% set(handles.axes_gripper, 'Position', [100 100 0 0]);
 handles.user.robot.retract;
 set(handles.text_response, 'String', handles.user.robot.retract);
+set(handles.user.bars, 'Visible', 'Off');
+set(handles.axes_gripper, 'Position', get(handles.axes_gripper, 'Position') + [0 handles.user.moveAmountY 0 0]);
+
 guidata(hObject, handles);
 
 
@@ -174,6 +213,8 @@ function pushbutton_extend_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.user.robot.extend;
 set(handles.text_response, 'String', handles.user.robot.extend);
+set(handles.user.bars, 'Visible', 'On');
+set(handles.axes_gripper, 'Position', get(handles.axes_gripper, 'Position') + [0 -handles.user.moveAmountY 0 0]);
 
 guidata(hObject, handles);
 
@@ -244,6 +285,8 @@ function pushbutton_eSpecial_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_eSpecial (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+handles.user.robot.especial;
+guidata(hObject, handles);
 
 
 % --- Executes on button press in pushbutton_cSpecial.
@@ -301,7 +344,11 @@ if ~isempty(open_ports)
 end
 
 value = str2double(get(handles.comPort, 'String'));
+if value ~= 0
 handles.user.robot = PlateLoader(value)
+else
+    handles.user.robot = PlateLoaderSim(value);
+end
 
 % fprintf('the value is %d', value);
 % fprintf('Connecting to robot... COM%s \n\n', handles.comPort.String);
@@ -309,6 +356,8 @@ handles.user.robot = PlateLoader(value)
 % s = serial(com,'BaudRate',19200,'Terminator',10,'Timeout',5);
 connected = sprintf('Connected to COM%s',handles.comPort.String);
 set(handles.text_response, 'String', connected);
+handles.user.connected = 'true';
+fprintf('%s\n\n',handles.user.connected);
 guidata(hObject,handles);
 
 
@@ -321,6 +370,8 @@ open_ports = instrfind('Type', 'serial', 'Status', 'open');
 if ~isempty(open_ports)
     fclose(open_ports);
 end
+handles.user.connected = 'false';
+fprintf('%s\n\n',handles.user.connected);
 fprintf('Closed COM PORT \n \n');
 set(handles.text_response, 'String', 'Closed COM port');
 guidata(hObject, handles);
@@ -332,4 +383,3 @@ function pushbutton_getStatus_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.text_response, 'String', handles.user.robot.getStatus);
 guidata(hObject, handles);
-

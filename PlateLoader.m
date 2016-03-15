@@ -154,7 +154,117 @@ classdef PlateLoader < hgsetget
             %  Can someone make the call to LOADED_STATUS also update
             %  properties, just in case somehow it gets off
         end
-        
+        function response = especial(obj)
+            uiwait(helpdlg('Please place one plate at location 1 and one on 5'));
+                    obj.isGripperClosed = false;
+%                     fprintf(s,'GRIPPER OPEN');
+                        response = getResponse(obj);
+                        fprintf(response);
+                    obj.xAxisPosition = 1;
+%                     fprintf(s,'X-AXIS 1');
+                        response = getResponse(obj);
+                        fprintf(response);
+                    obj.isZAxisExtended = true;
+%                     fprintf(s,'Z-AXIS EXTEND');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.isGripperClosed = true;
+%                     fprintf(s,'GRIPPER CLOSE');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.isZAxisExtended = false;
+%                     fprintf(s,'Z-AXIS RETRACT');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.xAxisPosition = 4;
+%                     fprintf(s,'X-AXIS 4');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.isZAxisExtended = true;
+%                     fprintf(s,'Z-AXIS EXTEND');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.isGripperClosed = false;
+%                     fprintf(s,'GRIPPER OPEN');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.isZAxisExtended = false;
+%                     fprintf(s,'Z-AXIS RETRACT');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.xAxisPosition = 5;
+%                     fprintf(s,'X-AXIS 5');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.isZAxisExtended = true;
+%                     fprintf(s,'Z-AXIS EXTEND');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.isGripperClosed = true;
+%                     fprintf(s,'GRIPPER CLOSE');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.isZAxisExtended = false;
+%                     fprintf(s,'Z-AXIS RETRACT');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.xAxisPosition = 2;
+%                     fprintf(s,'X-AXIS 2');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.isZAxisExtended = true;
+%                     fprintf(s,'Z-AXIS EXTEND');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.isGripperClosed = false;
+%                     fprintf(s,'GRIPPER OPEN');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.isZAxisExtended = false;
+%                     fprintf(s,'Z-AXIS RETRACT');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        obj.xAxisPosition = 3;
+%                     fprintf(s,'X-AXIS 3');
+                        response = getResponse(obj);
+                        fprintf(response);
+        end
+        function response = cspecial(obj)
+            uiwait(helpdlg('Please place plate at location 3'));
+                    fprintf(s,'X-AXIS 3');
+                    fprintf(getResponse(s));
+                    fprintf(s,'GRIPPER OPEN');
+                    fprintf(getResponse(s));
+                    fprintf(s,'Z-AXIS EXTEND');
+                    fprintf(getResponse(s));
+                    fprintf(s,'GRIPPER CLOSE');
+                    fprintf(getResponse(s));
+                    fprintf(s,'X-AXIS 1');
+                    fprintf(getResponse(s));
+                    fprintf(s,'Z-AXIS EXTEND');
+                    fprintf(getResponse(s));
+                    fprintf(s,'GRIPPER OPEN');
+                    fprintf(getResponse(s));
+                    fprintf(s,'Z-AXIS RETRACT');
+                    fprintf(getResponse(s));
+                    uiwait(helpdlg('Please return plate to location 3'));
+                    fprintf(s,'X-AXIS 3');
+                    fprintf(getResponse(s));
+                    fprintf(s,'GRIPPER OPEN');
+                    fprintf(getResponse(s));
+                    fprintf(s,'Z-AXIS EXTEND');
+                    fprintf(getResponse(s));
+                    fprintf(s,'GRIPPER CLOSE');
+                    fprintf(getResponse(s));
+                    fprintf(s,'X-AXIS 5');
+                    fprintf(getResponse(s));
+                    fprintf(s,'Z-AXIS EXTEND');
+                    fprintf(getResponse(s));
+                    fprintf(s,'GRIPPER OPEN');
+                    fprintf(getResponse(s));
+                    fprintf(s,'Z-AXIS RETRACT');
+                    fprintf(getResponse(s));
+        end
         % Other to todo's if someone wants to.  Implement the additional
         %  weird commands: STOP_CYLINDER, VERSION, 
         %  X-AXIS_STATUS, Z-AXIS_STATUS, GRIPPER_STATUS
