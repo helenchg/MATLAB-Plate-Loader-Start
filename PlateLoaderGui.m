@@ -22,7 +22,7 @@ function varargout = PlateLoaderGui(varargin)
 
 % Edit the above text to modify the response to help PlateLoaderGui
 
-% Last Modified by GUIDE v2.5 15-Mar-2016 10:16:26
+% Last Modified by GUIDE v2.5 17-Mar-2016 02:06:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,11 +57,11 @@ handles.output = hObject;
 handles.user.connected = 'false';
 handles.user.robot = 0;
 
-handles.user.timeTable = [60 20 30
-            0 30 30
-            30 0 30
-            30 30 0
-            30 20 60];
+handles.user.timeTable = [0 60 20 30 0
+            0 0 30 30 0
+            0 30 0 30 0
+            0 30 30 0 0
+            0 30 20 60 0];
 % handles.user.robot = PlateLoaderSim;
 handles.user.background = addImageToAxes('robot_background.jpg', handles.axes_background, 0);
 handles.user.gripperClosed = addImageToAxes('gripper_closed_no_plate.jpg', handles.axes_gripper, 100);
@@ -69,6 +69,9 @@ handles.user.bars = addImageToAxes('extended_bars.jpg', handles.axes_bars, 0);
 set(handles.user.bars, 'Visible', 'Off'); 
 handles.user.moveAmountX = 95;
 handles.user.moveAmountY = 130;
+handles.user.handlesArray = [handles.pushbutton_open,handles.pushbutton_close, handles.popupmenu_from, handles.popupmenu_to, handles.pushbutton_retract, handles.pushbutton_extend, handles.pushbutton_reset, handles.pushbutton_x1,handles.pushbutton_x2,handles.pushbutton_x3,handles.pushbutton_x4,handles.pushbutton_x5, handles.pushbutton_getStatus, handles.pushbutton_setTimeDelays, handles.pushbutton_resetTimeDelays, handles.pushbutton_movePlate, handles.pushbutton_eSpecial, handles.pushbutton_cSpecial, handles.uitable1]
+set(handles.user.handlesArray, 'Enable', 'off');
+
 % set(handles.axes_background, 'Position', [0 0 0 0])
 % Update handles structure
 guidata(hObject, handles);
@@ -93,11 +96,21 @@ function pushbutton_reset_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_reset (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.user.robot.reset;
+% handles.user.robot.reset;
 set(handles.text_response, 'String', handles.user.robot.reset);
 set(handles.axes_gripper, 'Position', [396 497 100 57]);
 set(handles.axes_bars, 'Position', [420 424 53 129]);
 set(handles.user.bars, 'Visible', 'Off');
+if handles.user.robot.isGripperClosed == 0
+    handles.user.gripperClosed = addImageToAxes('gripper_open_no_plate.jpg', handles.axes_gripper, 100);
+else
+   handles.user.gripperClosed = addImageToAxes('gripper_closed_no_plate.jpg', handles.axes_gripper, 100);
+end
+if handles.user.robot.isPlatePresent == 0
+    handles.user.gripperClosed = addImageToAxes('gripper_closed_no_plate.jpg', handles.axes_gripper, 100);
+else
+    handles.user.gripperClosed = addImageToAxes('gripper_with_plate.jpg', handles.axes_gripper, 100);
+end
 guidata(hObject, handles);
 
 % --- Executes on button press in pushbutton_x1.
@@ -105,12 +118,12 @@ function pushbutton_x1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_x1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.user.robot.x(1);
 set(handles.text_response, 'String', handles.user.robot.x(1));
 set(handles.axes_gripper, 'Position', [396-2*handles.user.moveAmountX 497 100 57]);
 set(handles.axes_bars, 'Position', [420-2*handles.user.moveAmountX 424 53 129]);
 set(handles.user.bars, 'Visible', 'Off');
-
+set(handles.pushbutton_retract, 'Visible', 'Off');
+set(handles.pushbutton_extend, 'Visible', 'On');
 guidata(hObject, handles);
 
 
@@ -119,12 +132,12 @@ function pushbutton_x2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_x2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.user.robot.x(2);
 set(handles.text_response, 'String', handles.user.robot.x(2));
 set(handles.axes_gripper, 'Position', [396-handles.user.moveAmountX 497 100 57]);
 set(handles.axes_bars, 'Position', [420-handles.user.moveAmountX 424 53 129]);
 set(handles.user.bars, 'Visible', 'Off');
-
+set(handles.pushbutton_retract, 'Visible', 'Off');
+set(handles.pushbutton_extend, 'Visible', 'On');
 guidata(hObject, handles);
 
 
@@ -133,12 +146,12 @@ function pushbutton_x3_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_x3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.user.robot.x(3);
 set(handles.text_response, 'String', handles.user.robot.x(3));
 set(handles.axes_gripper, 'Position', [396 497 100 57]);
 set(handles.axes_bars, 'Position', [420 424 53 129]);
 set(handles.user.bars, 'Visible', 'Off');
-
+set(handles.pushbutton_retract, 'Visible', 'Off');
+set(handles.pushbutton_extend, 'Visible', 'On');
 guidata(hObject, handles);
 
 
@@ -147,12 +160,12 @@ function pushbutton_x4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_x4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.user.robot.x(4);
 set(handles.text_response, 'String', handles.user.robot.x(4));
 set(handles.axes_gripper, 'Position', [396+handles.user.moveAmountX 497 100 57]);
 set(handles.axes_bars, 'Position', [420+handles.user.moveAmountX 424 53 129]);
 set(handles.user.bars, 'Visible', 'Off');
-
+set(handles.pushbutton_retract, 'Visible', 'Off');
+set(handles.pushbutton_extend, 'Visible', 'On');
 guidata(hObject, handles);
 
 
@@ -161,12 +174,12 @@ function pushbutton_x5_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_x5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.user.robot.x(5);
 set(handles.text_response, 'String', handles.user.robot.x(5));
 set(handles.axes_gripper, 'Position', [396+2*handles.user.moveAmountX 497 100 57]);
 set(handles.axes_bars, 'Position', [420+2*handles.user.moveAmountX 424 53 129]);
 set(handles.user.bars, 'Visible', 'Off');
-
+set(handles.pushbutton_retract, 'Visible', 'Off');
+set(handles.pushbutton_extend, 'Visible', 'On');
 
 guidata(hObject, handles);
 
@@ -176,8 +189,8 @@ function pushbutton_open_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_open (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.user.robot.open;
 set(handles.text_response, 'String', handles.user.robot.open);
+handles.user.gripperClosed = addImageToAxes('gripper_open_no_plate.jpg', handles.axes_gripper, 100);
 guidata(hObject, handles);
 
 
@@ -186,8 +199,12 @@ function pushbutton_close_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_close (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.user.robot.close;
 set(handles.text_response, 'String', handles.user.robot.close);
+if handles.user.robot.isPlatePresent == 1
+    handles.user.gripperClosed = addImageToAxes('gripper_with_plate.jpg', handles.axes_gripper, 100);
+else
+    handles.user.gripperClosed = addImageToAxes('gripper_closed_no_plate.jpg', handles.axes_gripper, 100);
+end
 guidata(hObject, handles);
 
 
@@ -198,11 +215,11 @@ function pushbutton_retract_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % if handles.user.robot ~= 0
 % set(handles.axes_gripper, 'Position', [100 100 0 0]);
-handles.user.robot.retract;
 set(handles.text_response, 'String', handles.user.robot.retract);
 set(handles.user.bars, 'Visible', 'Off');
 set(handles.axes_gripper, 'Position', get(handles.axes_gripper, 'Position') + [0 handles.user.moveAmountY 0 0]);
-
+set(handles.pushbutton_retract, 'Visible', 'Off');
+set(handles.pushbutton_extend, 'Visible', 'On');
 guidata(hObject, handles);
 
 
@@ -211,9 +228,10 @@ function pushbutton_extend_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_extend (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.user.robot.extend;
 set(handles.text_response, 'String', handles.user.robot.extend);
+set(handles.pushbutton_retract, 'Visible', 'On');
 set(handles.user.bars, 'Visible', 'On');
+set(handles.pushbutton_extend, 'Visible', 'Off');
 set(handles.axes_gripper, 'Position', get(handles.axes_gripper, 'Position') + [0 -handles.user.moveAmountY 0 0]);
 
 guidata(hObject, handles);
@@ -276,7 +294,7 @@ function pushbutton_movePlate_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 fromValue = get(handles.popupmenu_from, 'Value');
 toValue = get(handles.popupmenu_to, 'Value');
-handles.user.robot.movePlate(fromValue,toValue);
+% handles.user.robot.movePlate(fromValue,toValue);
 set(handles.text_response, 'String', handles.user.robot.movePlate(fromValue,toValue));
 guidata(hObject, handles);
 
@@ -286,6 +304,7 @@ function pushbutton_eSpecial_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.user.robot.especial;
+
 guidata(hObject, handles);
 
 
@@ -294,6 +313,9 @@ function pushbutton_cSpecial_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_cSpecial (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+handles.user.robot.cspecial;
+
+guidata(hObject, handles);
 
 
 % --- Executes on button press in pushbutton_setTimeDelays.
@@ -301,7 +323,15 @@ function pushbutton_setTimeDelays_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_setTimeDelays (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+defaultTimeTable = [0 60 20 30 0
+    0 0 30 30 0
+    0 30 0 30 0
+    0 30 30 0 0
+    0 30 20 60 0];
+data = get(handles.uitable1, 'data')
+set(handles.text_response, 'String', handles.user.robot.setTimeValues(data));
 
+guidata(hObject, handles);
 
 % --- Executes on button press in pushbutton_resetTimeDelays.
 function pushbutton_resetTimeDelays_Callback(hObject, eventdata, handles)
@@ -309,7 +339,9 @@ function pushbutton_resetTimeDelays_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
+set(handles.text_response, 'String', handles.user.robot.resetDefaultTimes);
+set(handles.uitable1, 'data', handles.user.timeTable);
+guidata(hObject, handles);
 
 function comPort_Callback(hObject, eventdata, handles)
 % hObject    handle to comPort (see GCBO)
@@ -357,6 +389,7 @@ end
 connected = sprintf('Connected to COM%s',handles.comPort.String);
 set(handles.text_response, 'String', connected);
 handles.user.connected = 'true';
+set(handles.user.handlesArray, 'Enable', 'on');
 fprintf('%s\n\n',handles.user.connected);
 guidata(hObject,handles);
 
@@ -373,6 +406,7 @@ end
 handles.user.connected = 'false';
 fprintf('%s\n\n',handles.user.connected);
 fprintf('Closed COM PORT \n \n');
+set(handles.user.handlesArray, 'Enable', 'off');
 set(handles.text_response, 'String', 'Closed COM port');
 guidata(hObject, handles);
 
@@ -383,3 +417,15 @@ function pushbutton_getStatus_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.text_response, 'String', handles.user.robot.getStatus);
 guidata(hObject, handles);
+
+
+% --- Executes when entered data in editable cell(s) in uitable1.
+function uitable1_CellEditCallback(hObject, eventdata, handles)
+% hObject    handle to uitable1 (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
+%	Indices: row and column indices of the cell(s) edited
+%	PreviousData: previous data for the cell(s) edited
+%	EditData: string(s) entered by the user
+%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%	Error: error string when failed to convert EditData to appropriate value for Data
+% handles    structure with handles and user data (see GUIDATA)
