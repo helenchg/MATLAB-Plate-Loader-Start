@@ -22,7 +22,7 @@ function varargout = PlateLoaderGui(varargin)
 
 % Edit the above text to modify the response to help PlateLoaderGui
 
-% Last Modified by GUIDE v2.5 17-Mar-2016 02:06:56
+% Last Modified by GUIDE v2.5 18-Mar-2016 08:09:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -296,6 +296,12 @@ fromValue = get(handles.popupmenu_from, 'Value');
 toValue = get(handles.popupmenu_to, 'Value');
 % handles.user.robot.movePlate(fromValue,toValue);
 set(handles.text_response, 'String', handles.user.robot.movePlate(fromValue,toValue));
+set(handles.text_response, 'String', handles.user.robot.x(3));
+set(handles.axes_gripper, 'Position', [396 497 100 57]);
+set(handles.axes_bars, 'Position', [420 424 53 129]);
+set(handles.user.bars, 'Visible', 'Off');
+set(handles.pushbutton_retract, 'Visible', 'Off');
+set(handles.pushbutton_extend, 'Visible', 'On');
 guidata(hObject, handles);
 
 % --- Executes on button press in pushbutton_eSpecial.
@@ -303,8 +309,13 @@ function pushbutton_eSpecial_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_eSpecial (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.user.robot.especial;
-
+response = handles.user.robot.especial;
+set(handles.text_response, 'String', response);
+set(handles.axes_gripper, 'Position', [396+2*handles.user.moveAmountX 497 100 57]);
+set(handles.axes_bars, 'Position', [420+2*handles.user.moveAmountX 424 53 129]);
+set(handles.user.bars, 'Visible', 'Off');
+set(handles.pushbutton_retract, 'Visible', 'Off');
+set(handles.pushbutton_extend, 'Visible', 'On');
 guidata(hObject, handles);
 
 
@@ -313,10 +324,14 @@ function pushbutton_cSpecial_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_cSpecial (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.user.robot.cspecial;
-
+response = handles.user.robot.cspecial;
+set(handles.text_response, 'String', response);
+set(handles.axes_gripper, 'Position', [396+2*handles.user.moveAmountX 497 100 57]);
+set(handles.axes_bars, 'Position', [420+2*handles.user.moveAmountX 424 53 129]);
+set(handles.user.bars, 'Visible', 'Off');
+set(handles.pushbutton_retract, 'Visible', 'Off');
+set(handles.pushbutton_extend, 'Visible', 'On');
 guidata(hObject, handles);
-
 
 % --- Executes on button press in pushbutton_setTimeDelays.
 function pushbutton_setTimeDelays_Callback(hObject, eventdata, handles)
@@ -429,3 +444,17 @@ function uitable1_CellEditCallback(hObject, eventdata, handles)
 %	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
 %	Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on key press with focus on pushbutton_open and none of its controls.
+function pushbutton_open_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to pushbutton_open (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.UICONTROL)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+    key = get(gcf,'CurrentKey');
+    if(strcmp (key , 'return'))
+        pushbutton_open_Callback(hObject, eventdata, handles)
+    end

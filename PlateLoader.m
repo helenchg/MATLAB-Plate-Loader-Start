@@ -41,6 +41,10 @@ classdef PlateLoader < hgsetget
             %   Can someone add code to get Plate status
             %   Maybe use the GRIPPER_STATUS command and ready string reply
             obj.isPlatePresent = false;
+            frequencyA5 = 880; frequencyA4 = 440; tstep = 1/8192;
+            song = [sin(2*pi*frequencyA4*(0:tstep:0.2)),...
+                sin(2*pi*frequencyA5*(0:tstep:0.2))];
+            sound(song);
         end
         function response = reset(obj)
             % Reset robot
@@ -49,13 +53,30 @@ classdef PlateLoader < hgsetget
             obj.isZAxisExtended = false;
             obj.isGripperClosed = true;
             response = getResponse(obj);
+            frequencyA5 = 880; frequencyA4 = 440; tstep = 1/8192;
+            song = [sin(2*pi*frequencyA4*(0:tstep:0.2)),...
+                sin(2*pi*frequencyA5*(0:tstep:0.2))];
+            sound(song);
         end
+        
         function response = x(obj,pos)
             % Moves the x-axis to position, passes the reply back to caller
             if (pos <1 || pos>5)
                 fprintf('Illegal position');
                 return
             end
+            if pos == 1 
+                frequency = 440;  
+            elseif pos == 2
+                frequency = 493.88;
+            elseif pos == 3
+                frequency = 523.25;
+            elseif pos == 4
+                frequency = 587.33;
+            else frequency = 659.25;
+            end
+            tstep = 1/8192; song = sin(2*pi*frequency*(0:tstep:0.8));
+            sound(song);
             xCommand = sprintf('X-AXIS %d',pos);
             fprintf(obj.serialRobot,xCommand);
             if(obj.xAxisPosition ~= pos)
@@ -66,6 +87,10 @@ classdef PlateLoader < hgsetget
         end
         function response = extend(obj)
             % Extends the Z-Axis, passes the reply back to caller
+            frequencyA5 = 880; frequencyE5 = 659.25; tstep = 1/8192; 
+            song = [sin(2*pi*frequencyA5*(0:tstep:0.4)),...
+                sin(2*pi*frequencyE5*(0:tstep:0.2))];
+            sound(song);
             fprintf(obj.serialRobot,'Z-AXIS EXTEND');
             response = getResponse(obj);
             if(strcmp(response(1:5),'ERROR'))
@@ -76,12 +101,21 @@ classdef PlateLoader < hgsetget
         end
         function response = retract(obj)
             % Retracts the Z-Axis, passes the reply back to caller
+            frequencyA5 = 880; frequencyE5 = 659.25; tstep = 1/8192; 
+            song = [sin(2*pi*frequencyE5*(0:tstep:0.4)),...
+                sin(2*pi*frequencyA5*(0:tstep:0.2))];
+            sound(song);
             fprintf(obj.serialRobot,'Z-AXIS RETRACT');
             obj.isZAxisExtended = false;
             response = getResponse(obj);
         end
         function response = close(obj)
             % Close Gripper, passes the reply back to caller
+            frequencyF5 = 698.46; frequencyE5 = 659.25; tstep = 1/8192; 
+            song = [sin(2*pi*frequencyF5*(0:tstep:0.2)),...
+                sin(2*pi*frequencyE5*(0:tstep:0.2)),...
+                sin(2*pi*frequencyF5*(0:tstep:0.2))];
+            sound(song);
             fprintf(obj.serialRobot,'GRIPPER CLOSE');
             obj.isGripperClosed = true;
             response = getResponse(obj);
@@ -93,6 +127,11 @@ classdef PlateLoader < hgsetget
         end
         function response = open(obj)
             % Open Gripper, passes the reply back to caller
+            frequencyF5 = 698.46; frequencyE5 = 659.25; tstep = 1/8192; 
+            song = [sin(2*pi*frequencyE5*(0:tstep:0.2)),...
+                sin(2*pi*frequencyF5*(0:tstep:0.2)),...
+                sin(2*pi*frequencyE5*(0:tstep:0.2))];
+            sound(song);
             fprintf(obj.serialRobot,'GRIPPER OPEN');
             obj.isGripperClosed = false;
             obj.isPlatePresent = false;
@@ -150,120 +189,130 @@ classdef PlateLoader < hgsetget
             % get the properties of the class, this is a useful double check
             fprintf(obj.serialRobot,'LOADER_STATUS');
             response = getResponse(obj);
+            frequencyB4 = 493.88; frequencyF4 = 349.63; 
+            frequencyD5 = 587.33; tstep = 1/8192;
+            song = [sin(2*pi*frequencyB4*(0:tstep:0.2)),...
+                sin(2*pi*frequencyF4*(0:tstep:0.2)),...
+                sin(2*pi*frequencyD5*(0:tstep:0.2))];
+            sound(song);
             % TODO: Make the values update if different
             %  Can someone make the call to LOADED_STATUS also update
             %  properties, just in case somehow it gets off
         end
         function response = especial(obj)
-%             uiwait(helpdlg('Please place one plate at location 1 and one on 5'));
-                    obj.isGripperClosed = false;
-%                     fprintf(s,'GRIPPER OPEN');
-%                         response = getResponse(obj);
-%                         fprintf(response);
-                    obj.xAxisPosition = 1;
-%                     fprintf(s,'X-AXIS 1');
-%                         response = getResponse(obj);
-%                         fprintf(response);
-                    obj.isZAxisExtended = true;
-%                     fprintf(s,'Z-AXIS EXTEND');
-%                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.isGripperClosed = true;
-%                     fprintf(s,'GRIPPER CLOSE');
-%                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.isZAxisExtended = false;
-%                     fprintf(s,'Z-AXIS RETRACT');
+            uiwait(helpdlg('Please place one plate at location 1 and one on 5'));
+%                     obj.isGripperClosed = false;
+                    fprintf(obj.serialRobot,'GRIPPER OPEN');
                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.xAxisPosition = 4;
-%                     fprintf(s,'X-AXIS 4');
+                        fprintf(response);
+%                     obj.xAxisPosition = 1;
+                    fprintf(obj.serialRobot,'X-AXIS 1');
                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.isZAxisExtended = true;
-%                     fprintf(s,'Z-AXIS EXTEND');
+                        fprintf(response);
+%                     obj.isZAxisExtended = true;
+                    fprintf(obj.serialRobot,'Z-AXIS EXTEND');
                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.isGripperClosed = false;
-%                     fprintf(s,'GRIPPER OPEN');
+                        fprintf(response);
+%                         obj.isGripperClosed = true;
+                    fprintf(obj.serialRobot,'GRIPPER CLOSE');
                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.isZAxisExtended = false;
-%                     fprintf(s,'Z-AXIS RETRACT');
+                        fprintf(response);
+%                         obj.isZAxisExtended = false;
+                    fprintf(obj.serialRobot,'Z-AXIS RETRACT');
                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.xAxisPosition = 5;
-%                     fprintf(s,'X-AXIS 5');
+                        fprintf(response);
+%                         obj.xAxisPosition = 4;
+                    fprintf(obj.serialRobot,'X-AXIS 4');
                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.isZAxisExtended = true;
-%                     fprintf(s,'Z-AXIS EXTEND');
+                        fprintf(response);
+%                         obj.isZAxisExtended = true;
+                    fprintf(obj.serialRobot,'Z-AXIS EXTEND');
                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.isGripperClosed = true;
-%                     fprintf(s,'GRIPPER CLOSE');
+                        fprintf(response);
+%                         obj.isGripperClosed = false;
+                    fprintf(obj.serialRobot,'GRIPPER OPEN');
                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.isZAxisExtended = false;
-%                     fprintf(s,'Z-AXIS RETRACT');
+                        fprintf(response);
+%                         obj.isZAxisExtended = false;
+                    fprintf(obj.serialRobot,'Z-AXIS RETRACT');
                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.xAxisPosition = 2;
-%                     fprintf(s,'X-AXIS 2');
+                        fprintf(response);
+%                         obj.xAxisPosition = 5;
+                    fprintf(obj.serialRobot,'X-AXIS 5');
                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.isZAxisExtended = true;
-%                     fprintf(s,'Z-AXIS EXTEND');
+                        fprintf(response);
+%                         obj.isZAxisExtended = true;
+                    fprintf(obj.serialRobot,'Z-AXIS EXTEND');
                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.isGripperClosed = false;
-%                     fprintf(s,'GRIPPER OPEN');
+                        fprintf(response);
+%                         obj.isGripperClosed = true;
+                    fprintf(obj.serialRobot,'GRIPPER CLOSE');
                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.isZAxisExtended = false;
-%                     fprintf(s,'Z-AXIS RETRACT');
+                        fprintf(response);
+%                         obj.isZAxisExtended = false;
+                    fprintf(obj.serialRobot,'Z-AXIS RETRACT');
                         response = getResponse(obj);
-%                         fprintf(response);
-                        obj.xAxisPosition = 3;
-%                     fprintf(s,'X-AXIS 3');
+                        fprintf(response);
+%                         obj.xAxisPosition = 2;
+                    fprintf(obj.serialRobot,'X-AXIS 2');
                         response = getResponse(obj);
-%                         fprintf(response);
+                        fprintf(response);
+%                         obj.isZAxisExtended = true;
+                    fprintf(obj.serialRobot,'Z-AXIS EXTEND');
+                        response = getResponse(obj);
+                        fprintf(response);
+%                         obj.isGripperClosed = false;
+                    fprintf(obj.serialRobot,'GRIPPER OPEN');
+                        response = getResponse(obj);
+                        fprintf(response);
+%                         obj.isZAxisExtended = false;
+                    fprintf(obj.serialRobot,'Z-AXIS RETRACT');
+                        response = getResponse(obj);
+                        fprintf(response);
+%                         obj.xAxisPosition = 3;
+                    fprintf(obj.serialRobot,'X-AXIS 3');
+                        response = getResponse(obj);
+                        fprintf(response);
+                        response = 'READY';
         end
         function response = cspecial(obj)
             uiwait(helpdlg('Please place plate at location 3'));
-                    fprintf(s,'X-AXIS 3');
-                    fprintf(getResponse(s));
-                    fprintf(s,'GRIPPER OPEN');
-                    fprintf(getResponse(s));
-                    fprintf(s,'Z-AXIS EXTEND');
-                    fprintf(getResponse(s));
-                    fprintf(s,'GRIPPER CLOSE');
-                    fprintf(getResponse(s));
-                    fprintf(s,'X-AXIS 1');
-                    fprintf(getResponse(s));
-                    fprintf(s,'Z-AXIS EXTEND');
-                    fprintf(getResponse(s));
-                    fprintf(s,'GRIPPER OPEN');
-                    fprintf(getResponse(s));
-                    fprintf(s,'Z-AXIS RETRACT');
-                    fprintf(getResponse(s));
+                    fprintf(obj.serialRobot,'X-AXIS 3');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'GRIPPER OPEN');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'Z-AXIS EXTEND');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'GRIPPER CLOSE');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'X-AXIS 1');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'Z-AXIS EXTEND');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'GRIPPER OPEN');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'Z-AXIS RETRACT');
+                    fprintf(getResponse(obj));
                     uiwait(helpdlg('Please return plate to location 3'));
-                    fprintf(s,'X-AXIS 3');
-                    fprintf(getResponse(s));
-                    fprintf(s,'GRIPPER OPEN');
-                    fprintf(getResponse(s));
-                    fprintf(s,'Z-AXIS EXTEND');
-                    fprintf(getResponse(s));
-                    fprintf(s,'GRIPPER CLOSE');
-                    fprintf(getResponse(s));
-                    fprintf(s,'X-AXIS 5');
-                    fprintf(getResponse(s));
-                    fprintf(s,'Z-AXIS EXTEND');
-                    fprintf(getResponse(s));
-                    fprintf(s,'GRIPPER OPEN');
-                    fprintf(getResponse(s));
-                    fprintf(s,'Z-AXIS RETRACT');
-                    fprintf(getResponse(s));
+                    fprintf(obj.serialRobot,'X-AXIS 3');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'GRIPPER OPEN');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'Z-AXIS EXTEND');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'GRIPPER CLOSE');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'X-AXIS 5');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'Z-AXIS EXTEND');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'GRIPPER OPEN');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'Z-AXIS RETRACT');
+                    fprintf(getResponse(obj));
+                    fprintf(obj.serialRobot,'GRIPPER CLOSE');
+                    fprintf(getResponse(obj));
+                    response = 'READY';
         end
         % Other to todo's if someone wants to.  Implement the additional
         %  weird commands: STOP_CYLINDER, VERSION, 
